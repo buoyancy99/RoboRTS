@@ -17,6 +17,7 @@
 
 #ifndef ROBORTS_SDK_LOG_H
 #define ROBORTS_SDK_LOG_H
+
 #include <iostream>
 #include <fstream>
 #include "glog/logging.h"
@@ -45,19 +46,18 @@
 
 
 class GLogWrapper {
- public:
-  GLogWrapper(char* program) {
-    google::InitGoogleLogging(program);
-    FLAGS_stderrthreshold=google::WARNING;
-    FLAGS_colorlogtostderr=true;
-    FLAGS_v = 3;
-    google::InstallFailureSignalHandler();
-  }
+public:
+    GLogWrapper(char *program) {
+        google::InitGoogleLogging(program);
+        FLAGS_stderrthreshold = google::WARNING;
+        FLAGS_colorlogtostderr = true;
+        FLAGS_v = 3;
+        google::InstallFailureSignalHandler();
+    }
 
-  ~GLogWrapper()
-  {
-    google::ShutdownGoogleLogging();
-  }
+    ~GLogWrapper() {
+        google::ShutdownGoogleLogging();
+    }
 };
 
 

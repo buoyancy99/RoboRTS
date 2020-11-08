@@ -17,50 +17,53 @@
 
 #ifndef TEST_TRACKING_UTILITY_H
 #define TEST_TRACKING_UTILITY_H
+
 #include "opencv2/opencv.hpp"
+
 /*! @brief
  * The TrackingUtility Class handles simple start and stop tracking logic
  */
-class TrackingUtility
-{
+class TrackingUtility {
 public:
-  TrackingUtility()
-          : P1(0,0),
-            P2(0,0),
-            roi(0,0,0,0),
-            mouseClicked(false),
-            roiSelected(false),
-            state(STATE_IDLE)
-  {
-  }
+    TrackingUtility()
+            : P1(0, 0),
+              P2(0, 0),
+              roi(0, 0, 0, 0),
+              mouseClicked(false),
+              roiSelected(false),
+              state(STATE_IDLE) {
+    }
 
-  typedef enum TrackingState
-  {
-    STATE_IDLE,
-    STATE_INIT,
-    STATE_ONGOING,
-    STATE_STOP
-  } TrackingState;
+    typedef enum TrackingState {
+        STATE_IDLE,
+        STATE_INIT,
+        STATE_ONGOING,
+        STATE_STOP
+    } TrackingState;
 
-  static void mouseCallback(int event, int x, int y, int f, void *p);
+    static void mouseCallback(int event, int x, int y, int f, void *p);
 
-  cv::Point P1;
-  cv::Point P2;
-  bool mouseClicked;
-  cv::Rect roi;
+    cv::Point P1;
+    cv::Point P2;
+    bool mouseClicked;
+    cv::Rect roi;
 
-  /*!
-   * start_tracking is set true when you select a region and press 'g'
-   * is set to false when you press 's'
-   */
-  bool roiSelected;
-  TrackingState state;
-  TrackingState getState();
+    /*!
+     * start_tracking is set true when you select a region and press 'g'
+     * is set to false when you press 's'
+     */
+    bool roiSelected;
+    TrackingState state;
 
-  void startTracker();
-  void stopTracker();
+    TrackingState getState();
 
-  cv::Rect getROI();
-  void getKey(char c);
+    void startTracker();
+
+    void stopTracker();
+
+    cv::Rect getROI();
+
+    void getKey(char c);
 };
+
 #endif //TEST_TRACKING_UTILITY_H

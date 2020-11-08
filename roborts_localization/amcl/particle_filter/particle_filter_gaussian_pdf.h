@@ -49,36 +49,37 @@ namespace roborts_localization {
 /**
  * @brief Gaussian pdf class
  */
-class ParticleFilterGaussianPdf {
+    class ParticleFilterGaussianPdf {
 
- public:
-  /**
-   * @brief Default constructor
-   */
-  ParticleFilterGaussianPdf() = default;
-  /**
-   * @brief Create a gaussian pdf by mean and covariance
-   * @param mean Mean to initialize the gaussian pdf
-   * @param covariance Covariance initialize the gaussian pdf
-   */
-  ParticleFilterGaussianPdf(const Vec3d &mean, const Mat3d &covariance);
+    public:
+        /**
+         * @brief Default constructor
+         */
+        ParticleFilterGaussianPdf() = default;
 
-  /**
-   * @brief Generate random pose particle sample
-   * @return Return the random pose particle sample
-   */
-  Vec3d GenerateSample();
+        /**
+         * @brief Create a gaussian pdf by mean and covariance
+         * @param mean Mean to initialize the gaussian pdf
+         * @param covariance Covariance initialize the gaussian pdf
+         */
+        ParticleFilterGaussianPdf(const Vec3d &mean, const Mat3d &covariance);
 
- private:
+        /**
+         * @brief Generate random pose particle sample
+         * @return Return the random pose particle sample
+         */
+        Vec3d GenerateSample();
 
-  Vec3d mean_;
-  Mat3d covariance_;
+    private:
 
-  // Decomposed covariance matrix (rotation * diagonal)
-  Mat3d covariance_rotation_;
-  Vec3d covariance_diagonal_;
+        Vec3d mean_;
+        Mat3d covariance_;
 
-};
+        // Decomposed covariance matrix (rotation * diagonal)
+        Mat3d covariance_rotation_;
+        Vec3d covariance_diagonal_;
+
+    };
 
 }// roborts_localization
 

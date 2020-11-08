@@ -61,21 +61,22 @@
 
 namespace roborts_costmap {
 
-class CostmapLayers;
+    class CostmapLayers;
 
-class Layer {
- public:
+    class Layer {
+    public:
 /**
  * @brief constructor
  */
-  Layer();
+        Layer();
+
 /**
  * @brief initialize
  * @param parent the layered costmap, ie master grid
  * @param name this layer name
  * @param tf a tf listener providing transforms
  */
-  void Initialize(CostmapLayers *parent, std::string name, tf::TransformListener *tf);
+        void Initialize(CostmapLayers *parent, std::string name, tf::TransformListener *tf);
 
 /**
  * @brief This is called by the LayeredCostmap to poll this plugin as to how
@@ -89,8 +90,8 @@ class Layer {
  * @param max_x
  * @param max_y these declare the updating boundary
  */
-  virtual void UpdateBounds(double robot_x, double robot_y, double robot_yaw, double *min_x, double *min_y,
-                            double *max_x, double *max_y) {}
+        virtual void UpdateBounds(double robot_x, double robot_y, double robot_yaw, double *min_x, double *min_y,
+                                  double *max_x, double *max_y) {}
 
 /**
  * @brief Actually update the underlying costmap, only within the bounds
@@ -101,63 +102,63 @@ class Layer {
  * @param max_i
  * @param max_j the update boundary
  */
-  virtual void UpdateCosts(Costmap2D &master_grid, int min_i, int min_j, int max_i, int max_j) {}
+        virtual void UpdateCosts(Costmap2D &master_grid, int min_i, int min_j, int max_i, int max_j) {}
 
-  /**
-   * @brief Stop.
-   */
-  virtual void Deactivate() {}
+        /**
+         * @brief Stop.
+         */
+        virtual void Deactivate() {}
 
-  /**
-   * @brief Restart, if they've been stopped.
-   */
-  virtual void Activate() {}
+        /**
+         * @brief Restart, if they've been stopped.
+         */
+        virtual void Activate() {}
 
-  /**
-   * @brief Reset the layer
-   */
-  virtual void Reset() {}
+        /**
+         * @brief Reset the layer
+         */
+        virtual void Reset() {}
 
-  virtual ~Layer() {}
+        virtual ~Layer() {}
 
-  /**
-   * @brief Check to make sure all the data in the layer is update.
-   * @return Whether the data in the layer is up to date.
-   */
-  bool IsCurrent() const {
-    return is_current_;
-  }
+        /**
+         * @brief Check to make sure all the data in the layer is update.
+         * @return Whether the data in the layer is up to date.
+         */
+        bool IsCurrent() const {
+            return is_current_;
+        }
 
-  /**
-   * @brief Implement this to make this layer match the size of the parent costmap.
-   */
-  virtual void MatchSize() {}
+        /**
+         * @brief Implement this to make this layer match the size of the parent costmap.
+         */
+        virtual void MatchSize() {}
 
-  std::string GetName() const {
-    return name_;
-  }
+        std::string GetName() const {
+            return name_;
+        }
 
-  /**
-   * @brief Convenience function for layered_costmap_->GetFootprint().
-   */
-  const std::vector<geometry_msgs::Point> &GetFootprint() const;
+        /**
+         * @brief Convenience function for layered_costmap_->GetFootprint().
+         */
+        const std::vector <geometry_msgs::Point> &GetFootprint() const;
 
-  virtual void OnFootprintChanged() {}
+        virtual void OnFootprintChanged() {}
 
- protected:
-  /** @brief This is called at the end of initialize().  Override to
-   * implement subclass-specific initialization.
-   * tf_, name_, and layered_costmap_ will all be set already when this is called. */
-  virtual void OnInitialize() {}
+    protected:
+        /** @brief This is called at the end of initialize().  Override to
+         * implement subclass-specific initialization.
+         * tf_, name_, and layered_costmap_ will all be set already when this is called. */
+        virtual void OnInitialize() {}
 
-  CostmapLayers *layered_costmap_;
-  bool is_current_, is_enabled_, is_debug_;
-  std::string name_;
-  tf::TransformListener *tf_;
+        CostmapLayers *layered_costmap_;
+        bool is_current_, is_enabled_, is_debug_;
+        std::string name_;
+        tf::TransformListener *tf_;
 
- private:
-  std::vector<geometry_msgs::Point> footprint_spec_;
-};
+    private:
+        std::vector <geometry_msgs::Point> footprint_spec_;
+    };
 
 }  //namespace roborts_costmap
 #endif  // ROBORTS_COSTMAP_LAYER_H

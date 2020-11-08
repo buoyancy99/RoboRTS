@@ -63,130 +63,138 @@ namespace roborts_costmap {
  * @class CellData
  * @brief Storage for cell information used during obstacle inflation
  */
-class CellData {
- public:
-  /**
-   * @brief  Constructor for a CellData objects
-   * @param  i The index of the cell in the cost map
-   * @param  x The x coordinate of the cell in the cost map
-   * @param  y The y coordinate of the cell in the cost map
-   * @param  sx The x coordinate of the closest obstacle cell in the costmap
-   * @param  sy The y coordinate of the closest obstacle cell in the costmap
-   * @return
-   */
-  CellData(double i, unsigned int x, unsigned int y, unsigned int sx, unsigned int sy) :
-      index_(i), x_(x), y_(y), src_x_(sx), src_y_(sy) {
-  }
-  unsigned int index_;
-  unsigned int x_, y_;
-  unsigned int src_x_, src_y_;
-};
+    class CellData {
+    public:
+        /**
+         * @brief  Constructor for a CellData objects
+         * @param  i The index of the cell in the cost map
+         * @param  x The x coordinate of the cell in the cost map
+         * @param  y The y coordinate of the cell in the cost map
+         * @param  sx The x coordinate of the closest obstacle cell in the costmap
+         * @param  sy The y coordinate of the closest obstacle cell in the costmap
+         * @return
+         */
+        CellData(double i, unsigned int x, unsigned int y, unsigned int sx, unsigned int sy) :
+                index_(i), x_(x), y_(y), src_x_(sx), src_y_(sy) {
+        }
 
-class InflationLayer : public Layer {
- public:
-  InflationLayer();
+        unsigned int index_;
+        unsigned int x_, y_;
+        unsigned int src_x_, src_y_;
+    };
 
-  virtual ~InflationLayer() {
-    DeleteKernels();
-  }
+    class InflationLayer : public Layer {
+    public:
+        InflationLayer();
 
-  virtual void OnInitialize();
-  virtual void UpdateBounds(double robot_x, double robot_y, double robot_yaw, double *min_x, double *min_y,
-                            double *max_x, double *max_y);
-  virtual void UpdateCosts(Costmap2D &master_grid, int min_i, int min_j, int max_i, int max_j);
-  virtual bool IsDiscretized() {
-    return true;
-  }
-  virtual void MatchSize();
+        virtual ~InflationLayer() {
+            DeleteKernels();
+        }
 
-  virtual void Reset() { OnInitialize(); }
+        virtual void OnInitialize();
 
-  /** @brief  Given a distance, compute a cost.
-   * @param  distance The distance from an obstacle in cells
-   * @return A cost value for the distance */
-  inline unsigned char ComputeCost(unsigned distance_cell) const {
-    unsigned char cost = 0;
-    if (distance_cell == 0)
-      cost = LETHAL_OBSTACLE;
-    else if (distance_cell * resolution_ <= inscribed_radius_)
-      cost = INSCRIBED_INFLATED_OBSTACLE;
-    else {
-      // make sure cost falls off by Euclidean distance
-      double euclidean_distance = distance_cell * resolution_;
-      double factor = exp(-1.0 * weight_ * (euclidean_distance - inscribed_radius_));
-      cost = (unsigned char) ((INSCRIBED_INFLATED_OBSTACLE - 1) * factor);
-    }
-    return cost;
-  }
+        virtual void UpdateBounds(double robot_x, double robot_y, double robot_yaw, double *min_x, double *min_y,
+                                  double *max_x, double *max_y);
 
-  /**
-   * @brief Change the values of the inflation radius parameters
-   * @param inflation_radius The new inflation radius
-   * @param cost_scaling_factor The new weight
-   */
-  void SetInflationParameters(double inflation_radius, double cost_scaling_factor);
+        virtual void UpdateCosts(Costmap2D &master_grid, int min_i, int min_j, int max_i, int max_j);
 
- protected:
-  virtual void OnFootprintChanged();
-  std::recursive_mutex *inflation_access_;
+        virtual bool IsDiscretized() {
+            return true;
+        }
 
- private:
-  /**
-   * @brief  Lookup pre-computed distances
-   * @param mx The x coordinate of the current cell
-   * @param my The y coordinate of the current cell
-   * @param src_x The x coordinate of the source cell
-   * @param src_y The y coordinate of the source cell
-   * @return
-   */
-  inline double DistanceLookup(int mx, int my, int src_x, int src_y) {
-    unsigned int dx = abs(mx - src_x);
-    unsigned int dy = abs(my - src_y);
-    return cached_distances_[dx][dy];
-  }
+        virtual void MatchSize();
 
-  /**
-   * @brief  Lookup pre-computed costs
-   * @param mx The x coordinate of the current cell
-   * @param my The y coordinate of the current cell
-   * @param src_x The x coordinate of the source cell
-   * @param src_y The y coordinate of the source cell
-   * @return
-   */
-  inline unsigned char CostLookup(int mx, int my, int src_x, int src_y) {
-    unsigned int dx = abs(mx - src_x);
-    unsigned int dy = abs(my - src_y);
-    return cached_costs_[dx][dy];
-  }
+        virtual void Reset() { OnInitialize(); }
 
-  void ComputeCaches();
-  void DeleteKernels();
-  void InflateArea(int min_i, int min_j, int max_i, int max_j, unsigned char *master_grid);
+        /** @brief  Given a distance, compute a cost.
+         * @param  distance The distance from an obstacle in cells
+         * @return A cost value for the distance */
+        inline unsigned char ComputeCost(unsigned distance_cell) const {
+            unsigned char cost = 0;
+            if (distance_cell == 0)
+                cost = LETHAL_OBSTACLE;
+            else if (distance_cell * resolution_ <= inscribed_radius_)
+                cost = INSCRIBED_INFLATED_OBSTACLE;
+            else {
+                // make sure cost falls off by Euclidean distance
+                double euclidean_distance = distance_cell * resolution_;
+                double factor = exp(-1.0 * weight_ * (euclidean_distance - inscribed_radius_));
+                cost = (unsigned char) ((INSCRIBED_INFLATED_OBSTACLE - 1) * factor);
+            }
+            return cost;
+        }
 
-  unsigned int CellDistance(double world_dist) {
-    return layered_costmap_->GetCostMap()->World2Cell(world_dist);
-  }
+        /**
+         * @brief Change the values of the inflation radius parameters
+         * @param inflation_radius The new inflation radius
+         * @param cost_scaling_factor The new weight
+         */
+        void SetInflationParameters(double inflation_radius, double cost_scaling_factor);
 
-  inline void Enqueue(unsigned int index, unsigned int mx, unsigned int my,
-                      unsigned int src_x, unsigned int src_y);
+    protected:
+        virtual void OnFootprintChanged();
 
-  double inflation_radius_, inscribed_radius_, weight_;
-  bool inflate_unknown_;
-  unsigned int cell_inflation_radius_;
-  unsigned int cached_cell_inflation_radius_;
-  std::map<double, std::vector<CellData> > inflation_cells_;
+        std::recursive_mutex *inflation_access_;
 
-  double resolution_;
+    private:
+        /**
+         * @brief  Lookup pre-computed distances
+         * @param mx The x coordinate of the current cell
+         * @param my The y coordinate of the current cell
+         * @param src_x The x coordinate of the source cell
+         * @param src_y The y coordinate of the source cell
+         * @return
+         */
+        inline double DistanceLookup(int mx, int my, int src_x, int src_y) {
+            unsigned int dx = abs(mx - src_x);
+            unsigned int dy = abs(my - src_y);
+            return cached_distances_[dx][dy];
+        }
 
-  bool* seen_;
-  int seen_size_;
+        /**
+         * @brief  Lookup pre-computed costs
+         * @param mx The x coordinate of the current cell
+         * @param my The y coordinate of the current cell
+         * @param src_x The x coordinate of the source cell
+         * @param src_y The y coordinate of the source cell
+         * @return
+         */
+        inline unsigned char CostLookup(int mx, int my, int src_x, int src_y) {
+            unsigned int dx = abs(mx - src_x);
+            unsigned int dy = abs(my - src_y);
+            return cached_costs_[dx][dy];
+        }
 
-  unsigned char** cached_costs_;
-  double** cached_distances_;
-  double last_min_x_, last_min_y_, last_max_x_, last_max_y_;
+        void ComputeCaches();
 
-  bool need_reinflation_;
-};
+        void DeleteKernels();
+
+        void InflateArea(int min_i, int min_j, int max_i, int max_j, unsigned char *master_grid);
+
+        unsigned int CellDistance(double world_dist) {
+            return layered_costmap_->GetCostMap()->World2Cell(world_dist);
+        }
+
+        inline void Enqueue(unsigned int index, unsigned int mx, unsigned int my,
+                            unsigned int src_x, unsigned int src_y);
+
+        double inflation_radius_, inscribed_radius_, weight_;
+        bool inflate_unknown_;
+        unsigned int cell_inflation_radius_;
+        unsigned int cached_cell_inflation_radius_;
+        std::map<double, std::vector<CellData> > inflation_cells_;
+
+        double resolution_;
+
+        bool *seen_;
+        int seen_size_;
+
+        unsigned char **cached_costs_;
+        double **cached_distances_;
+        double last_min_x_, last_min_y_, last_max_x_, last_max_y_;
+
+        bool need_reinflation_;
+    };
 
 } //namespace roborts_costmap
 #endif  //ROBORTS_COSTMAP_INFLATION_LAYER_H

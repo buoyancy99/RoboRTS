@@ -88,15 +88,14 @@ the use of this software, even if advised of the possibility of such damage.
 #define _OPENCV_KCFTRACKER_HPP_
 #endif
 
-class KCFTracker : public Tracker
-{
+class KCFTracker : public Tracker {
 public:
     // Constructor
     KCFTracker(bool hog = true, bool fixed_window = true, bool multiscale = true, bool lab = true);
 
     // Initialize tracker 
     virtual void init(const cv::Rect &roi, cv::Mat image);
-    
+
     // Update position based on the new frame
     virtual cv::Rect update(cv::Mat image);
 
@@ -125,7 +124,7 @@ protected:
     cv::Mat createGaussianPeak(int sizey, int sizex);
 
     // Obtain sub-window from image, with replication-padding and extract features
-    cv::Mat getFeatures(const cv::Mat & image, bool inithann, float scale_adjust = 1.0f);
+    cv::Mat getFeatures(const cv::Mat &image, bool inithann, float scale_adjust = 1.0f);
 
     // Initialize Hanning window. Function called only in the first frame.
     void createHanningMats();

@@ -10,26 +10,26 @@ find_package(Threads REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Glog REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  tf
-  nav_msgs
-  message_filters
-  sensor_msgs
-  )
+        roscpp
+        tf
+        nav_msgs
+        message_filters
+        sensor_msgs
+        )
 catkin_package()
 
 add_subdirectory(amcl)
 
 include_directories(
-    src
+        src
 )
 
 add_executable(
-    localization_node
-    localization_node.cpp
-    localization_node.h
-    localization_math.cpp
-    )
+        localization_node
+        localization_node.cpp
+        localization_node.h
+        localization_math.cpp
+)
 
 target_link_libraries(localization_node
         PUBLIC

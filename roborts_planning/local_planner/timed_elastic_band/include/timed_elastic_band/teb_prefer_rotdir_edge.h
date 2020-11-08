@@ -70,32 +70,34 @@
 namespace roborts_local_planner {
 
 
-class PreferRotDirEdge : public TebBinaryEdgeBase<1, double, TebVertexPose, TebVertexPose> {
- public:
-  
-  PreferRotDirEdge() {
-    _measurement = 1;
-  }
-  
-  void computeError() {
-    const TebVertexPose *conf1 = static_cast<const TebVertexPose *>(_vertices[0]);
-    const TebVertexPose *conf2 = static_cast<const TebVertexPose *>(_vertices[1]);
+    class PreferRotDirEdge : public TebBinaryEdgeBase<1, double, TebVertexPose, TebVertexPose> {
+    public:
 
-    _error[0] = PenaltyBoundFromBelow(_measurement * g2o::normalize_theta(conf2->GetPose().GetTheta() - conf1->GetPose().GetTheta()), 0, 0);
-  }
+        PreferRotDirEdge() {
+            _measurement = 1;
+        }
 
-  void SetRotDir(double dir) {
-    _measurement = dir;
-  }
+        void computeError() {
+            const TebVertexPose *conf1 = static_cast<const TebVertexPose *>(_vertices[0]);
+            const TebVertexPose *conf2 = static_cast<const TebVertexPose *>(_vertices[1]);
 
-  void PreferRight() { _measurement = -1; }
+            _error[0] = PenaltyBoundFromBelow(
+                    _measurement * g2o::normalize_theta(conf2->GetPose().GetTheta() - conf1->GetPose().GetTheta()), 0,
+                    0);
+        }
 
-  void PreferLeft() { _measurement = 1; }
+        void SetRotDir(double dir) {
+            _measurement = dir;
+        }
 
- public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+        void PreferRight() { _measurement = -1; }
 
-};
+        void PreferLeft() { _measurement = 1; }
+
+    public:
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+    };
 
 } // namespace roborts_local_planner
 #endif // ROBORTS_PLANNING_LOCAL_PLANNER_TEB_PREFER_ROTDIR_EDGE_H

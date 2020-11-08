@@ -22,86 +22,84 @@
 
 namespace roborts_decision {
 
-class FastLineIterator {
-  // this method is a modified version of base_local_planner/line_iterator.h
- public:
-  FastLineIterator( int x0, int y0, int x1, int y1 )
-      : x0_( x0 )
-      , y0_( y0 )
-      , x1_( x1 )
-      , y1_( y1 )
-      , x_( x0 )
-      , y_( y0 )
-      , deltax_(abs(x1 - x0))
-      , deltay_(abs(y1 - y0))
-      , curpixel_( 0 ) {
+    class FastLineIterator {
+        // this method is a modified version of base_local_planner/line_iterator.h
+    public:
+        FastLineIterator(int x0, int y0, int x1, int y1)
+                : x0_(x0), y0_(y0), x1_(x1), y1_(y1), x_(x0), y_(y0), deltax_(abs(x1 - x0)), deltay_(abs(y1 - y0)),
+                  curpixel_(0) {
 
-    xinc1_ = (x1 - x0) >0 ?1:-1;
-    xinc2_ = (x1 - x0) >0 ?1:-1;
+            xinc1_ = (x1 - x0) > 0 ? 1 : -1;
+            xinc2_ = (x1 - x0) > 0 ? 1 : -1;
 
-    yinc1_ = (y1 - y0) >0 ?1:-1;
-    yinc2_ = (y1 - y0) >0 ?1:-1;
+            yinc1_ = (y1 - y0) > 0 ? 1 : -1;
+            yinc2_ = (y1 - y0) > 0 ? 1 : -1;
 
-    if( deltax_ >= deltay_ ) {
-      xinc1_ = 0;
-      yinc2_ = 0;
-      den_ = 2 * deltax_;
-      num_ = deltax_;
-      numadd_ = 2 * deltay_;
-      numpixels_ = deltax_;
-    } else {
-      xinc2_ = 0;
-      yinc1_ = 0;
-      den_ = 2 * deltay_;
-      num_ = deltay_;
-      numadd_ = 2 * deltax_;
-      numpixels_ = deltay_;
-    }
-  }
-  ~FastLineIterator() = default;
-  bool IsValid() const {
-    return curpixel_ <= numpixels_;
-  }
+            if (deltax_ >= deltay_) {
+                xinc1_ = 0;
+                yinc2_ = 0;
+                den_ = 2 * deltax_;
+                num_ = deltax_;
+                numadd_ = 2 * deltay_;
+                numpixels_ = deltax_;
+            } else {
+                xinc2_ = 0;
+                yinc1_ = 0;
+                den_ = 2 * deltay_;
+                num_ = deltay_;
+                numadd_ = 2 * deltax_;
+                numpixels_ = deltay_;
+            }
+        }
 
-  void Advance() {
-    num_ += numadd_;
-    if( num_ >= den_ ) {
-      num_ -= den_;
-      x_ += xinc1_;
-      y_ += yinc1_;
-    }
-    x_ += xinc2_;
-    y_ += yinc2_;
+        ~FastLineIterator() = default;
 
-    curpixel_++;
-  }
+        bool IsValid() const {
+            return curpixel_ <= numpixels_;
+        }
 
-  int GetX() const { return x_; }
-  int GetY() const { return y_; }
+        void Advance() {
+            num_ += numadd_;
+            if (num_ >= den_) {
+                num_ -= den_;
+                x_ += xinc1_;
+                y_ += yinc1_;
+            }
+            x_ += xinc2_;
+            y_ += yinc2_;
 
-  int GetX0() const { return x0_; }
-  int GetY0() const { return y0_; }
+            curpixel_++;
+        }
 
-  int GetX1() const { return x1_; }
-  int GetY1() const { return y1_; }
+        int GetX() const { return x_; }
 
- private:
-  int x0_;
-  int y0_;
-  int x1_;
-  int y1_;
+        int GetY() const { return y_; }
 
-  int x_;
-  int y_;
+        int GetX0() const { return x0_; }
 
-  int deltax_;
-  int deltay_;
+        int GetY0() const { return y0_; }
 
-  int curpixel_;
+        int GetX1() const { return x1_; }
 
-  int xinc1_, xinc2_, yinc1_, yinc2_;
-  int den_, num_, numadd_, numpixels_;
-};
+        int GetY1() const { return y1_; }
+
+    private:
+        int x0_;
+        int y0_;
+        int x1_;
+        int y1_;
+
+        int x_;
+        int y_;
+
+        int deltax_;
+        int deltay_;
+
+        int curpixel_;
+
+        int xinc1_, xinc2_, yinc1_, yinc2_;
+        int den_, num_, numadd_, numpixels_;
+    };
 
 } // namespace roborts_decision
 

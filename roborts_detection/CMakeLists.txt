@@ -6,16 +6,16 @@ set(CMAKE_BUILD_TYPE Release)
 set(COMPILE_PROTO 0)
 
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  tf
-  actionlib
-  cv_bridge
-  image_transport
-  std_msgs
-  sensor_msgs
-  roborts_msgs
-  roborts_common
-  )
+        roscpp
+        tf
+        actionlib
+        cv_bridge
+        image_transport
+        std_msgs
+        sensor_msgs
+        roborts_msgs
+        roborts_common
+        )
 
 find_package(ProtoBuf REQUIRED)
 find_package(OpenCV 3 REQUIRED)

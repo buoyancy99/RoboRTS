@@ -7,23 +7,23 @@ set(CMAKE_BUILD_TYPE Release)
 
 
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  roborts_msgs
-  actionlib
-  )
+        roscpp
+        roborts_msgs
+        actionlib
+        )
 
 find_package(Boost REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 catkin_package(
-  INCLUDE_DIRS
-  include
+        INCLUDE_DIRS
+        include
 )
 include_directories(include)
 
 install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  FILES_MATCHING PATTERN "*.h"
-  PATTERN ".svn" EXCLUDE
-  )
+        DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+        FILES_MATCHING PATTERN "*.h"
+        PATTERN ".svn" EXCLUDE
+        )
 

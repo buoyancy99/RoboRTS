@@ -6,7 +6,7 @@
     </description>
     <author>RoboMaster</author>
     <maintainer email="robomaster@dji.com">RoboMaster</maintainer>
-    <license>GPL 3.0 </license>
+    <license>GPL 3.0</license>
     <url>https://github.com/RoboMaster/RoboRTS</url>
 
     <buildtool_depend>catkin</buildtool_depend>
